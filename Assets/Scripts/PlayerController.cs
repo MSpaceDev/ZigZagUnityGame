@@ -11,20 +11,33 @@ public class PlayerController : MonoBehaviour {
 	public Transform groundCheck;
 	Rigidbody rb;
 	Animator anim;
+    GameManager gameManager;
 
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody>();
+        gameManager = FindObjectOfType<GameManager>();
 	}
 
 	private void FixedUpdate()
 	{
+        if (gameManager.gameStarted)
+            anim.SetTrigger("gameStarted");
+        else
+            return;
+
 		transform.position += transform.forward * moveSpeed * Time.deltaTime;
+
+        if (transform.position.y < -2)
+            gameManager.RestartGame();
 	}
 
 	// Update is called once per frame
 	void Update () {
+        if (!gameManager.gameStarted)
+            return;
+
 		if (Input.GetKeyDown(KeyCode.Space))
 			Switch();
 
